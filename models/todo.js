@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+mongoose.set('useCreateIndex', true);
 // Define Schemes
 const todoSchema = new mongoose.Schema({
   todoid: { type: Number, required: true, unique: true },
@@ -9,6 +10,7 @@ const todoSchema = new mongoose.Schema({
 {
   timestamps: true
 });
+
 
 // Create new todo document
 todoSchema.statics.create = function (payload) {

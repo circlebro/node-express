@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const User = require('../models/user');
 const mongoose = require('mongoose');
+const { exists } = require("../models/user");
 
 // Find All
 router.get('/', (req, res) => res.render("user/index"));
@@ -12,6 +13,7 @@ router.get('/signup', (req, res) => res.render("user/signup"));
 
 router.post('/signup', (req, res, next) => {
     console.log(req.body);
+    return;
     User.find({ email:req.body.email })
         .exec()
         .then(user => {
