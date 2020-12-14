@@ -1,41 +1,29 @@
-const express = require("express");
-const router = express.Router();
+const router = require('express').Router();
 const User = require('../models/user');
-const mongoose = require('mongoose');
-const { exists } = require("../models/user");
 
 // Find All
 router.get('/', (req, res) => res.render("user/index"));
 
-//router.get('/login', (req, res) => res.render("user/login"));
+router.get('/login', (req, res) => res.render("user/login"));
+
+router.post('/login', (req, res, next) => {
+    User.login(req.body);
+});
 
 router.get('/signup', (req, res) => res.render("user/signup"));
 
 router.post('/signup', (req, res, next) => {
-    console.log(req.body);
-    return;
-    User.find({ email:req.body.email })
-        .exec()
+    User.findEmail(req.body.email)
         .then(user => {
             if (user.length >= 1) {
-                res.send('<script type="text/javascript">alert("이미 존재하는 이메일입니다."); window.location="/signup"; </script>');
+                res.status(404).send({ err: '이미 존재하는 이메일입니다.' });
             } else {
-                const user = new User({
-                    _id: new mongoose.Types.ObjectId(),
-                    name:req.body.name,
-                    email: req.body.email,
-                    password: req.body.password
-                });
-                user
-                    .save()
+                User.create(req.body)
                     .then(result => {
-                        console.log(result);
-                        res.redirect("/");
+                        res.redirect("/users");
                     })
-                    .catch(err => {
-                        console.log(err);
-                    });
-                  }
+                    .catch(err => res.status(500).send(err));
+            }
         });
 });
 

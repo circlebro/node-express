@@ -1,9 +1,9 @@
 // ENV
 require('dotenv').config();
-const bodyParser = require('body-parser');
 // DEPENDENCIES
 const express = require('express');
 const mongoose = require('mongoose');
+const session = require('express-session');
 
 const app = express();
 const port = process.env.PORT || 4500;
@@ -14,8 +14,15 @@ app.set('view engine', 'ejs');
 
 // Static File Service
 app.use(express.static('public'));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(bodyParser.json());
+app.use(session({
+  secret: 'circle!@#',
+  resave: false,
+  saveUninitialized: true
+}));
+
+//app.use(express.cookieParser());
 
 // Node.js의 native Promise 사용
 mongoose.Promise = global.Promise;
